@@ -7,6 +7,7 @@ int const DEFAULT_WINDOW_WIDTH   = 800;
 int const DEFAULT_WINDOW_HEIGHT  = 600;
 int const DEFAULT_WINDOW_FLAGS   = 0;
 int const DEFAULT_RENDERER_FLAGS = 0; 
+
 std::filesystem::path const DEFAULT_ASSETS_DIR  = "assets";
 std::filesystem::path const DEFAULT_TEXTURES_FILE = "tilesheet.png";
 
@@ -80,7 +81,7 @@ parse_field(char *src, char *field, char *value) {
 }
 
 static void
-process_field(char *section, char *field, char *value, struct Settings &settings) {
+process_field(char *section, char *field, char *value, Settings &settings) {
     if (strcmp("display", section) == 0) {
         if (strcmp("resolution", field) == 0) {
             if (strcmp("1920x1080", value) == 0) {
@@ -115,7 +116,7 @@ process_field(char *section, char *field, char *value, struct Settings &settings
 }
 
 static int
-parse_ini(const char *fname, struct Settings &settings) {
+parse_ini(const char *fname, Settings &settings) {
     char line[BUFFSIZE]    = {0};
     char section[BUFFSIZE] = {0};
     char field[BUFFSIZE]   = {0};
@@ -154,7 +155,7 @@ parse_ini(const char *fname, struct Settings &settings) {
 }
 
 static void
-apply_default_config(struct Settings &settings) {
+apply_default_config(Settings &settings) {
     // initialize program default values
     settings.window_width   = DEFAULT_WINDOW_WIDTH;
     settings.window_height  = DEFAULT_WINDOW_HEIGHT;
@@ -165,14 +166,14 @@ apply_default_config(struct Settings &settings) {
 }
 
 int
-load_settings(struct Settings &settings) {
+load_settings(Settings &settings) {
     apply_default_config(settings);
     parse_ini("settings.ini", settings);
     return 0;
 }
 
 int
-save_settings(struct Settings const &settings) {
+save_settings(Settings const &settings) {
     FILE *f = fopen("settings.ini", "w");
 
     if (!f) {

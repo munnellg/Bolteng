@@ -15,8 +15,8 @@ link_libraries(SDL2::Main SDL2::Image)
 
 include_directories(vendor/glm)
 
-set(HEADER_FILES src/settings.h src/display.h src/audio.h src/assets.h src/level.h src/camera.h)
-set(SOURCE_FILES src/sokoban.cpp src/settings.cpp src/display.cpp src/audio.cpp src/assets.cpp src/level.cpp src/camera.cpp)
+file(GLOB_RECURSE HEADER_FILES "${PROJECT_SOURCE_DIR}/src/*.h")
+file(GLOB_RECURSE SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 
 add_executable(sokoban ${SOURCE_FILES} ${HEADER_FILES})
 

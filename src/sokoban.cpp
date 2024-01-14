@@ -1,138 +1,205 @@
+#include "sokoban.h"
+#include "core/subsystems/subsystems.h"
+#include "core/logging.h"
+
+Sokoban::Sokoban() {}
+
+bool Sokoban::init() {
+    // configure logging here if desired
+    logging::set_level(logging::Level::debug);
+
+    subsystems::init();
+
+    if (!m_entityManager.createSystems()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool Sokoban::play() {
+    subsystems::handle_events();
+    m_entityManager.update(10.0);
+    subsystems::pause(5000);
+    return true;
+}
+
+void Sokoban::quit() {
+    // release all memory
+    subsystems::quit();
+}
+
+/*
+#include "level.h"
+#include "core/entity_manager.h"
+#include "util/settings.h"
+
+#include <SDL2/SDL_video.h>
 #include <iostream>
+#include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-SDL_Window* window;
-SDL_Renderer* renderer;
+int quit = 0;
 
-const char* vertexShaderSource = R"(
-    #version 460 core
-    layout (location = 0) in vec2 position;
-    out vec2 TexCoords;
-    void main() {
-        gl_Position = vec4(position.x, -position.y, 0.0, 1.0);
-        TexCoords = position + vec2(0.5, 0.5);
-    }
-)";
+SDL_Window *window;
+SDL_Renderer *renderer;
+SDL_GLContext glContext;
 
-const char* fragmentShaderSource = R"(
-    #version 460 core
-    in vec2 TexCoords;
-    out vec4 FragColor;
-    uniform sampler2D textureSampler;
-    void main() {
-        FragColor = texture(textureSampler, TexCoords);
-    }
-)";
+EntityManager em;
 
-int main() {
-    // Initialize SDL2 and SDL_Image
-    SDL_Init(SDL_INIT_VIDEO);
-    IMG_Init(IMG_INIT_PNG);
+void
+clean() {
+    if (glContext) { SDL_GL_DeleteContext(glContext); }
+    if (renderer)  { SDL_DestroyRenderer(renderer); }
+    if (window)    { SDL_DestroyWindow(window); }
+    IMG_Quit();
+    SDL_Quit();
+}
+
+static void
+die(const char *msg, ...) {
+    va_list args;
+    va_start(args, msg);
+    fprintf(stderr, "ERROR: ");
+    vfprintf(stderr, msg, args);
+    fprintf(stderr, "\n");
+    va_end(args);
+    clean();
+    exit(EXIT_FAILURE);
+}
+
+int
+start(Settings const &settings) {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    // Create a window
-    window = SDL_CreateWindow("SDL2 OpenGL PNG Rendering", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_OPENGL);
-    if (!window) {
-        std::cout << "SDL_CreateWindow failed: " <<  SDL_GetError() << std::endl;
-        return 1;
+    if (SDL_Init(SDL_INIT_VIDEO)) {
+        std::cerr << "SDL_Init error: " << SDL_GetError() << std::endl;
+        return 0;
     }
 
-    // Create a rendering context
+    if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
+        std::cerr << "IMG_Init error: " << IMG_GetError() << std::endl;
+        return 0;
+    }
+
+    window = SDL_CreateWindow("OpenGL Tutorial", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, settings.window_width, settings.window_height, settings.window_flags | SDL_WINDOW_OPENGL);
+    if (!window) {
+        std::cerr << "SDL_CreateWindow error: " << SDL_GetError() << std::endl;
+        return 0;
+    }
+
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
-        std::cout << "SDL_CreateRenderer failed: " <<  SDL_GetError() << std::endl;
-        return 1;
+        std::cerr << "SDL_CreateRenderer error: " << SDL_GetError() << std::endl;
+        return 0;
     }
-
-    SDL_GLContext glContext = SDL_GL_CreateContext(window);
-    if (!glContext) {
-        std::cout << "SDL_GL_CreateContext failed: " <<  SDL_GetError() << std::endl;
-        return 1;
-    }
-
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
+    
+    GLuint err = glewInit();
     if (err != GLEW_OK) {
-        std::cout << "glewInit failed: " << glewGetErrorString(err) << std::endl;
-        return 1;
+        std::cerr << "glewInit error: " << glewGetString(err) << std::endl;
+        return 0;
     }
 
-    GLuint textureID;
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Load PNG texture using SDL_Image
-    SDL_Surface* surface = IMG_Load("assets/tilesheet.png");
-    if (!surface) {
-        std::cout << SDL_GetError() << std::endl;
-        return 1;
-    }
+    em.createSystems();
 
-    // Generate OpenGL texture
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-    SDL_FreeSurface(surface);
+    level_load(0);
 
-    // Set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    return 1;
+}
 
-    GLuint vertexShader, fragmentShader, shaderProgram;
+void
+render() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    level_render();
+    SDL_GL_SwapWindow(window);
+}
 
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+void
+handle_events() {
+    static int level_id = 0;
+    SDL_Event e;
 
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    int quit = 0;
-    while (!quit) {
-        SDL_Event e;
-
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glUseProgram(shaderProgram);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f); glVertex2f(-1.0f, -1.0f);
-        glTexCoord2f(1.0f, 0.0f); glVertex2f(1.0f, -1.0f);
-        glTexCoord2f(1.0f, 1.0f); glVertex2f(1.0f, 1.0f);
-        glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f, 1.0f);
-        glEnd();
-
-        SDL_GL_SwapWindow(window);
-
-        while (SDL_PollEvent(&e)) {
-            switch (e.type) {
-                case SDL_QUIT:
-                    quit = 1;
-                    break;
-                case SDL_KEYDOWN:
-                    switch (e.key.keysym.sym) {
-                        case SDLK_ESCAPE:
-                            quit = 1;
-                    }
-
-            }
+    while (SDL_PollEvent(&e)) {
+        switch (e.type) {
+            case SDL_QUIT:
+                quit = 1;
+                break;
+            case SDL_KEYDOWN:
+                switch (e.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        quit = 1;
+                        break;
+                }
+                break;
+            default:
+                break;
         }
     }
-
-    return 0;
 }
+
+void
+display_render_stats(Uint64 current) {
+    static Uint64 last_frame = 0;
+    static Uint64 frames[100] = {0};
+    static Uint64 perf_count_freq = SDL_GetPerformanceFrequency();
+    static int p = 0;
+
+    char buf[256] = {0};
+    Uint64 sum = 0, min = frames[0], max = frames[0];
+
+    frames[p] = perf_count_freq / std::max(1ul, (current - last_frame));
+    last_frame  = current;
+    p = (p + 1) % 100;
+
+    for (int i = 0; i < 100; i++) {
+        sum += frames[i];
+        min = std::min(min, frames[i]);
+        max = std::max(max, frames[i]);
+    }
+
+    sprintf(buf, "Sokoban - avg: %ld - min: %ld - max: %ld", sum / 100, min, max);
+    // display_title(buf);
+}
+
+void
+play() {
+    while (!quit) {
+        handle_events();
+        em.update(10.0f);
+        render();
+        display_render_stats(SDL_GetPerformanceCounter());
+    }
+}
+
+int
+main() {
+    Settings settings;
+    load_settings(settings);
+
+    if (!start(settings)) {
+        clean();
+        return EXIT_FAILURE;
+    }
+
+    play();
+
+    clean();
+
+    return EXIT_SUCCESS;
+}
+*/

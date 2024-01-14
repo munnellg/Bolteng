@@ -23,7 +23,7 @@ struct Settings {
     std::filesystem::path textures;
 };
 
-extern int load_settings(struct Settings &settings);
-extern int save_settings(struct Settings const &settings);
+extern int load_settings(Settings &settings);
+extern int save_settings(Settings const &settings);
 
 #endif
