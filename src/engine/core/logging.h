@@ -10,19 +10,19 @@
 #endif
 
 #define LOG_ERROR(...) do { \
-    logging::message(logging::Level::error, __FILENAME__, __LINE__, __VA_ARGS__); \
+    logging::message(logging::Level::error, __FILENAME__, __LINE__, __func__, __VA_ARGS__); \
 } while (0)
 
 #define LOG_WARN(...) do { \
-    logging::message(logging::Level::warn, __FILENAME__, __LINE__, __VA_ARGS__); \
+    logging::message(logging::Level::warn, __FILENAME__, __LINE__, __func__, __VA_ARGS__); \
 } while (0)
 
 #define LOG_INFO(...) do { \
-    logging::message(logging::Level::info, __FILENAME__, __LINE__, __VA_ARGS__); \
+    logging::message(logging::Level::info, __FILENAME__, __LINE__, __func__, __VA_ARGS__); \
 } while (0)
 
 #define LOG_DEBUG(...) do { \
-    logging::message(logging::Level::debug, __FILENAME__, __LINE__, __VA_ARGS__); \
+    logging::message(logging::Level::debug, __FILENAME__, __LINE__, __func__, __VA_ARGS__); \
 } while (0)
 
 namespace logging {
@@ -47,6 +47,6 @@ namespace logging {
 
     void close();
 
-    void message(Level const level, char const *file, int const line, char const *msg, ...);
+    void message(Level const level, char const *file, int const line, char const *func, char const *msg, ...);
 }
 #endif // LOGGING_H

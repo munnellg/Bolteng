@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+static std::function<void(void)> g_cb_quit;
+
 namespace subsystems {
     // forward declarations for private subsystem functions
     namespace input {
@@ -20,11 +22,18 @@ namespace subsystems {
         LOG_INFO("All subsystems terminated");
     }
 
+    void register_quit_callback(std::function<void(void)> cb_quit) {
+        g_cb_quit = cb_quit;
+    }
+
     void handle_events() {
         SDL_Event e;
 
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
+                case SDL_QUIT:
+                    g_cb_quit();
+                    break;
                 case SDL_KEYDOWN:
                     input::keydown(e.key);
                     break;
@@ -35,10 +44,6 @@ namespace subsystems {
                     break;
             }
         }
-    }
-
-    void pause(uint32_t ms) {
-        SDL_Delay(ms);
     }
 
     int init() {

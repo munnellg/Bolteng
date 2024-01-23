@@ -1,7 +1,9 @@
 #ifndef SOKOBAN_H
 #define SOKOBAN_H
 
-#include "core/entity_manager.h"
+#define GAME_NAME "SOKOBAN"
+
+#include <entt/entt.hpp>
 
 class Sokoban {
 public:
@@ -11,8 +13,11 @@ public:
     bool play();
     void quit();
 
+    void quit_main_loop();
+
 private:
-    EntityManager m_entityManager;
+    bool m_quit;
+    entt::registry m_registry;
 };
 
 #endif // SOKOBAN_H

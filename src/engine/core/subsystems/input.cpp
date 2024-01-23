@@ -5,6 +5,7 @@
 namespace subsystems {
     namespace input {
         int init() {
+            // NOOP
             return 1;
         }
 
@@ -15,6 +16,7 @@ namespace subsystems {
         }
 
         void quit() {
+            // NOOP
         }
     }
 }

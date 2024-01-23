@@ -23,7 +23,7 @@ namespace subsystems {
             LOG_INFO("Using OpenGL v%d.%d", OPENGL_MAJOR_VERSION, OPENGL_MINOR_VERSION);
 
             window = SDL_CreateWindow(
-                "OpenGL Tutorial", 
+                "Sokoban", 
                 SDL_WINDOWPOS_CENTERED, 
                 SDL_WINDOWPOS_CENTERED, 
                 /*settings.window_width*/ 1280, 
@@ -56,7 +56,7 @@ namespace subsystems {
 
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LESS);
-            
+
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             
@@ -65,6 +65,10 @@ namespace subsystems {
             return 1;
         }
     
+        void set_window_title(char const *title) {
+            SDL_SetWindowTitle(window, title);
+        }
+
         void swap() {
             SDL_GL_SwapWindow(window);
         }

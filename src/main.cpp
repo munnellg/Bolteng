@@ -1,13 +1,14 @@
 #include "sokoban.h"
+#include <cstdlib>
 
 int main(int argc, char *argv[]) {
     Sokoban sokoban;
 
-    if (sokoban.init()) {
-        sokoban.play();
+    if (!sokoban.init()) {
+        return EXIT_FAILURE;
     }
 
-    sokoban.quit();
+    sokoban.play();
 
     return EXIT_SUCCESS;
 }
