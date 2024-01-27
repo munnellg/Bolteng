@@ -2,7 +2,9 @@
 #define CORE_SUBSYSTEMS_SUBSYSTEMS
 
 #include <cstdint>
+#include <filesystem>
 #include <functional>
+#include <entt/entt.hpp>
 
 namespace subsystems {
     int init();
@@ -19,6 +21,8 @@ namespace subsystems {
     }
 
     namespace display {
+        extern float aspect;
+
         int init();
         void swap();
         void quit();
@@ -27,6 +31,14 @@ namespace subsystems {
     }
 
     namespace input {
+        int init();
+        void quit();
+    }
+
+    namespace render {
+        extern entt::entity camera;
+        extern uint32_t shader_program;
+
         int init();
         void quit();
     }

@@ -7,80 +7,15 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-static Level level;
-
 Level::Level() noexcept {
     width = 0;
     height = 0;
 }
 
-struct Tile {
-    glm::vec3 vertices[4];
-    glm::vec2 uvs[4];
-};
-
-std::vector<Tile> tiles;
-
-GLuint vao;
-GLuint vbo;
-
-void
-generate_background() {
-
-    for (int y = 0; y < 28; y++) {
-        for (int x = 0; x < 28; x++) {
-            Tile tile = {
-                .vertices = {
-                    glm::vec3(    x,     y, 0.0),
-                    glm::vec3(    x, y + 1, 0.0),
-                    glm::vec3(x + 1, y + 1, 0.0),
-                    glm::vec3(x + 1,     y, 0.0)
-                },
-                .uvs = {
-                    glm::vec2(0.0f, 0.0f),
-                    glm::vec2(0.0f, 1.0f),
-                    glm::vec2(1.0f, 1.0f),
-                    glm::vec2(1.0f, 0.0f)
-                }
-            };
-
-            tiles.push_back(tile);
-        }
-    }
-
-    glCreateVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    glCreateBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(tiles), tiles.data(), GL_STATIC_DRAW);
-}
-
-void
-generate_level_geometry(Level const& level) {
-    generate_background();    
-}
-
-void
-destroy_level_geometry() {
-
-}
-
-void
-level_render() {
-
-}
-
-void
-level_load(int level_id) {
-    if (level_id > serialized_levels.size()) {
-        return;
-    }
-
-    std::istringstream iss(serialized_levels[level_id]);
-    iss >> level;
-
-    generate_level_geometry(level);
+int
+Level::tile_at(size_t x, size_t y) {
+    size_t i = x + y * width;
+    return tiles[i];
 }
 
 std::ostream& 
@@ -1189,3 +1124,17 @@ std::array<std::string, 60> const serialized_levels = {
     "####________________######"
 
 };
+
+Level
+level_load(size_t level_id) {
+    Level level;
+
+    if (level_id > serialized_levels.size()) {
+        level_id = 0;
+    }
+
+    std::istringstream iss(serialized_levels[level_id]);
+    iss >> level;
+    std::cout << level << std::endl;
+    return level;
+}

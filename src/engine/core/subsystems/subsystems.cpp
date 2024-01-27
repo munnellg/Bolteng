@@ -67,6 +67,10 @@ namespace subsystems {
             return 0;
         }
 
+        if (!render::init()) {
+            return 0;
+        }
+
         LOG_INFO("All subsystems initialized");
 
         return 1;

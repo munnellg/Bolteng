@@ -1,8 +1,6 @@
 #include "sokoban.h"
 #include "scene/level_scene.h"
 #include "engine/core/subsystems/subsystems.h"
-#include "engine/core/logging.h"
-#include "engine/core/components/framerate_component.h"
 
 #include <cstdint>
 #include <functional>
@@ -13,11 +11,11 @@ Sokoban::Sokoban() : m_quit(false) {}
 bool Sokoban::init() {
     logging::set_level(logging::Level::debug);
 
-    subsystems::init();
-    subsystems::register_quit_callback(std::bind(&Sokoban::quit_main_loop, this));
+    if(!subsystems::init()) {
+        return false;
+    }
 
-    entt::entity const entity = m_registry.create();
-    m_registry.emplace<FramerateComponent>(entity);
+    subsystems::register_quit_callback(std::bind(&Sokoban::quit_main_loop, this));
 
     return true;
 }

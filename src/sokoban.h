@@ -3,8 +3,6 @@
 
 #define GAME_NAME "SOKOBAN"
 
-#include <entt/entt.hpp>
-
 class Sokoban {
 public:
     Sokoban();
@@ -17,7 +15,6 @@ public:
 
 private:
     bool m_quit;
-    entt::registry m_registry;
 };
 
 #endif // SOKOBAN_H

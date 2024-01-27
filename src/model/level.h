@@ -18,17 +18,16 @@ struct Level {
 
     size_t width;
     size_t height;
-    size_t player_start_x;
-    size_t player_start_y;
+    int player_start_x;
+    int player_start_y;
     std::vector<int> tiles;
+
+    int tile_at(size_t x, size_t y);
 
     friend std::ostream& operator<< (std::ostream& stream, Level const &level);
     friend std::istream& operator>> (std::istream& stream, Level &level);
 };
 
-extern std::array<std::string, 60> const serialized_levels;
-
-extern void level_render();
-extern void level_load(int level_id);
+extern Level level_load(size_t level_id);
 
 #endif // LEVEL_H

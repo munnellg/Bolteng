@@ -13,6 +13,8 @@ static int const OPENGL_MINOR_VERSION = 6;
 
 namespace subsystems {
     namespace display {
+        float aspect = 1280.0f / 720.0f;
+
         int init() {
             LOG_INFO("Initializing display subsystem");
 
@@ -54,11 +56,12 @@ namespace subsystems {
                 return 0;
             }
 
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_LESS);
-
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
             glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glClearColor(0.0,0.0,0.0,0.0);
+
+            // glEnable(GL_DEPTH_TEST);
+            // glDepthFunc(GL_LESS);
             
             LOG_INFO("Display subsystem initialized");
 

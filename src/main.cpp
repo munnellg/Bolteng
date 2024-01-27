@@ -10,5 +10,7 @@ int main(int argc, char *argv[]) {
 
     sokoban.play();
 
+    sokoban.quit();
+
     return EXIT_SUCCESS;
 }

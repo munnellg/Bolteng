@@ -1,12 +1,10 @@
 #ifndef SCENE_LEVEL
 #define SCENE_LEVEL
 
-#include "../engine/core/components/framerate_component.h"
-#include "../engine/core/systems/framerate_system.h"
-#include "../engine/core/systems/render_system.h"
+#include "../engine/core/engine.h"
+#include "../model/level.h"
 
 #include <cstdint>
-#include <entt/entt.hpp>
 #include <vector>
 
 class LevelScene {
@@ -16,6 +14,8 @@ public:
     void update(uint64_t delta);
 private:
     entt::registry m_registry;
+    entt::entity m_actor;
+    Level m_current_level;
 
     std::vector<ComponentSystem *> m_systems;
     FramerateSystem m_framerateSystem;
