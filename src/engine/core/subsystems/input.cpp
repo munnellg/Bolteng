@@ -1,11 +1,14 @@
 #include "subsystems.h"
+#include "../defines.h"
 
 #include <SDL2/SDL.h>
 
 namespace subsystems {
     namespace input {
+        // std::array<SDL_GameController*, 4> controllers;
+
         int init() {
-            // NOOP
+
             return 1;
         }
 

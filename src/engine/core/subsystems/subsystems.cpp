@@ -2,8 +2,10 @@
 #include "../logging.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_image.h>
 
+static std::function<void(SDL_KeyboardEvent)> g_cb_key;
 static std::function<void(void)> g_cb_quit;
 
 namespace subsystems {
@@ -22,6 +24,10 @@ namespace subsystems {
         LOG_INFO("All subsystems terminated");
     }
 
+    void register_key_callback(std::function<void(SDL_KeyboardEvent)> keyboard) {
+        g_cb_key = keyboard;
+    }
+
     void register_quit_callback(std::function<void(void)> cb_quit) {
         g_cb_quit = cb_quit;
     }
@@ -35,7 +41,7 @@ namespace subsystems {
                     g_cb_quit();
                     break;
                 case SDL_KEYDOWN:
-                    input::keydown(e.key);
+                    g_cb_key(e.key);
                     break;
                 case SDL_KEYUP:
                     input::keyup(e.key);

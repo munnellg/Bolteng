@@ -1,7 +1,7 @@
 #include "framerate_system.h"
 #include "../components/framerate_component.h"
 #include "../subsystems/subsystems.h"
-
+#include "../logging.h"
 #include <entt/entt.hpp>
 #include <numeric>
 
@@ -14,7 +14,6 @@ FramerateSystem::~FramerateSystem() {
 void FramerateSystem::update(uint64_t deltaTime) {
 
     auto view = m_pRegistry->view<FramerateComponent>();
-
     for (auto [entity, framerate]: view.each()) {
         auto frames = framerate.getDeltas();
         framerate.pushDelta(1000ul / std::max(1ul, deltaTime));

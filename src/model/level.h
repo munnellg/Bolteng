@@ -23,7 +23,7 @@ struct Level {
     std::vector<int> tiles;
 
     int tile_at(size_t x, size_t y);
-
+    size_t num_levels();
     friend std::ostream& operator<< (std::ostream& stream, Level const &level);
     friend std::istream& operator>> (std::istream& stream, Level &level);
 };

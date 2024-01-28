@@ -3,9 +3,9 @@
 #include <array>
 #include <sstream>
 #include <vector>
-#include <iostream>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "../engine/core/logging.h"
 
 Level::Level() noexcept {
     width = 0;
@@ -1135,6 +1135,11 @@ level_load(size_t level_id) {
 
     std::istringstream iss(serialized_levels[level_id]);
     iss >> level;
-    std::cout << level << std::endl;
-    return level;
+
+    return std::move(level);
+}
+
+size_t
+Level::num_levels() {
+    return serialized_levels.size();
 }

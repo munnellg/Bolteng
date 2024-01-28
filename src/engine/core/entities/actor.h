@@ -6,7 +6,7 @@
 namespace engine {
     namespace entities {
         entt::entity create_actor(entt::registry &registry, float x, float y, float z, int tex_id);
-        entt::entity create_camera(entt::registry &registry);
+        entt::entity create_camera(entt::registry &registry, float x, float y, float w, float h);
     }
 }
 

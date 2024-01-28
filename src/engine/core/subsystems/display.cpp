@@ -13,7 +13,7 @@ static int const OPENGL_MINOR_VERSION = 6;
 
 namespace subsystems {
     namespace display {
-        float aspect = 1280.0f / 720.0f;
+        float aspect = 1080.0f / 720.0f;
 
         int init() {
             LOG_INFO("Initializing display subsystem");
@@ -28,7 +28,7 @@ namespace subsystems {
                 "Sokoban", 
                 SDL_WINDOWPOS_CENTERED, 
                 SDL_WINDOWPOS_CENTERED, 
-                /*settings.window_width*/ 1280, 
+                /*settings.window_width*/ 1080, 
                 /*settings.window_height*/ 720, 
                 /*settings.window_flags |*/ SDL_WINDOW_OPENGL
             );
@@ -60,8 +60,8 @@ namespace subsystems {
             glEnable(GL_BLEND);
             glClearColor(0.0,0.0,0.0,0.0);
 
-            // glEnable(GL_DEPTH_TEST);
-            // glDepthFunc(GL_LESS);
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LESS);
             
             LOG_INFO("Display subsystem initialized");
 

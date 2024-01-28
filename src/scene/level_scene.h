@@ -12,10 +12,22 @@ public:
 
     LevelScene();
     void update(uint64_t delta);
+    void load_level(size_t level_id);
+
 private:
+    void clear_level();
+
     entt::registry m_registry;
     entt::entity m_actor;
-    Level m_current_level;
+
+    Level m_level;
+    std::vector<entt::entity> m_walls;
+    std::vector<entt::entity> m_background;
+    std::vector<entt::entity> m_crates;
+    std::vector<entt::entity> m_targets;
+    entt::entity m_player;
+    entt::entity m_camera;
+    entt::entity m_framerate;
 
     std::vector<ComponentSystem *> m_systems;
     FramerateSystem m_framerateSystem;

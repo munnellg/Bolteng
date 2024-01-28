@@ -1,8 +1,6 @@
 #include "actor.h"
 
-#include "../components/camera_component.h"
-#include "../components/render_component.h"
-#include "../components/transform_component.h"
+#include "../components/components.h"
 #include "../subsystems/subsystems.h"
 #include "../logging.h"
 
@@ -14,10 +12,10 @@ namespace engine {
     namespace entities {
         entt::entity create_actor(entt::registry &registry, float x, float y, float z, int tex_id) {
             entt::entity const actor = registry.create();
-            float tex_x = (float) (tex_id % 13) / 13.0f;
-            float tex_y = (float) (tex_id / 13) / 8.0f;
-            float tex_w = 1.0f / 13.0f;
-            float tex_h = 1.0f / 8.0f;
+            float tex_x = (float) (tex_id % 12) / 12.0f;
+            float tex_y = (float) (tex_id / 12) / 3.0f;
+            float tex_w = 1.0f / 12.0f;
+            float tex_h = 1.0f / 3.0f;
 
             glm::vec3 vertices[4] = {
                 glm::vec3(-0.5f, -0.5f, 0.0f),
@@ -57,20 +55,20 @@ namespace engine {
             glEnableVertexAttribArray(1);
 
             rcTile.m_nVertices = sizeof(indices);
-            registry.emplace<RenderComponent>(actor, rcTile);
+            registry.emplace<RenderComponent>(actor, std::move(rcTile));
 
-            TransformComponent tcPosition;
+            PositionComponent tcPosition;
             tcPosition.m_position = glm::vec3(x, y, z);
-            registry.emplace<TransformComponent>(actor, tcPosition);
+            registry.emplace<PositionComponent>(actor, tcPosition);
 
             return actor;
         }
 
-        entt::entity create_camera(entt::registry &registry) {
+        entt::entity create_camera(entt::registry &registry, float x, float y, float w, float h) {
             entt::entity const camera = registry.create();
 
-            float ortho_width  = 22.0f;
-            float ortho_height = ortho_width / subsystems::display::aspect;
+            float ortho_width  = w;
+            float ortho_height = h;
             
             CameraComponent ccCamera;
             ccCamera.m_projection = glm::ortho(
@@ -83,8 +81,8 @@ namespace engine {
             );
 
             ccCamera.m_view = glm::lookAt(
-                glm::vec3(10.5f, -5.0f, 10.0f), // camera is at (4, 3, 3) in world space
-                glm::vec3(10.5f, -5.0f, 0), // and looks at the origin
+                glm::vec3(x, y, 10.0f), // camera is at (4, 3, 3) in world space
+                glm::vec3(x, y, 0), // and looks at the origin
                 glm::vec3(0, 1, 0)  // head is up (set to 0, -1, 0 to look upside down)
             );
             

@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include "logging.h"
+#include "defines.h"
 
 #include "components/render_component.h"
 #include "components/camera_component.h"

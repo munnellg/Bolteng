@@ -5,13 +5,15 @@
 #include <filesystem>
 #include <functional>
 #include <entt/entt.hpp>
+#include <SDL2/SDL.h>
 
 namespace subsystems {
     int init();
     void handle_events();
     void quit();
 
-    void register_quit_callback(std::function<void(void)> cb_quit);
+    void register_key_callback(std::function<void(SDL_KeyboardEvent)> keyboard);
+    void register_quit_callback(std::function<void()> cb_quit);
 
     namespace time {
         void pause(uint32_t ms);
@@ -36,7 +38,6 @@ namespace subsystems {
     }
 
     namespace render {
-        extern entt::entity camera;
         extern uint32_t shader_program;
 
         int init();

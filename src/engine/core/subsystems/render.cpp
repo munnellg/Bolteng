@@ -15,7 +15,7 @@ namespace subsystems {
         GLuint tex;
         std::filesystem::path const vertex_shader_file = "assets/shaders/vshader.glsl";
         std::filesystem::path const fragment_shader_file = "assets/shaders/fshader.glsl";
-        std::filesystem::path const textures_file = "assets/textures/tilesheet.png";
+        std::filesystem::path const textures_file = "assets/textures/pokemon.png";
 
         int load_file(std::filesystem::path const &path, std::string &buffer) {
             std::ifstream in(path.generic_string());
@@ -100,8 +100,8 @@ namespace subsystems {
             SDL_FreeSurface(surface);
 
             // Set texture parameters
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 

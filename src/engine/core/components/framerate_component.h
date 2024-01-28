@@ -8,6 +8,7 @@ public:
     constexpr static const size_t MAX_DELTAS = 100;
 
     FramerateComponent();
+    ~FramerateComponent();
 
     std::array<uint64_t, MAX_DELTAS> const& getDeltas() const;
 
