@@ -8,6 +8,8 @@
 #include <functional>
 #include <entt/entt.hpp>
 
+using namespace bolt::input;
+
 Sokoban::Sokoban() : m_quit(false), m_current_level(0) {}
 
 bool Sokoban::init() {
@@ -17,9 +19,7 @@ bool Sokoban::init() {
         return false;
     }
 
-
-    subsystems::register_key_callback(std::bind(&Sokoban::set_level, this, std::placeholders::_1));
-    subsystems::register_quit_callback(std::bind(&Sokoban::quit_main_loop, this));
+    subsystems::events::register_quit_callback(std::bind(&Sokoban::quit_main_loop, this));
 
     return true;
 }
@@ -34,29 +34,27 @@ bool Sokoban::play() {
         last = curr;
         curr = subsystems::time::get_ticks();
 
-        subsystems::handle_events();
+        subsystems::events::handle_events();
+        update();
         m_level.update(curr - last);
     } 
 
     return true;
 }
 
-void Sokoban::set_level(SDL_KeyboardEvent const &event)  {
-    switch (event.keysym.scancode) {
-        case SDL_SCANCODE_DOWN:
-            if (--m_current_level >= 60) {
-                m_current_level = 59;
-            }
-            m_level.load_level(m_current_level);
-            break;
-        case SDL_SCANCODE_UP:
-            if (++m_current_level >= 60) {
-                m_current_level = 0;
-            }
-            m_level.load_level(m_current_level);
-            break;
-        default:
-            break;
+void Sokoban::update()  {
+    if (keyboard.m_keystate[Keyboard::KEY_UP]) {
+        if (--m_current_level >= 60) {
+            m_current_level = 59;
+        }
+        m_level.load_level(m_current_level);
+    }
+
+    if (keyboard.m_keystate[Keyboard::KEY_DOWN]) {
+        if (++m_current_level >= 60) {
+            m_current_level = 0;
+        }
+        m_level.load_level(m_current_level);
     }
 }
 

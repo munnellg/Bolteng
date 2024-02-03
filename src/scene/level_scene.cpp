@@ -58,24 +58,24 @@ void LevelScene::load_level(size_t level_id) {
     m_level = level_load(level_id);
     
     // render player
-    m_player = engine::entities::create_actor(m_registry, m_level.player_start_x, -m_level.player_start_y, 1.0f, PLAYER_TEXTURE);
+    m_player = bolt::entities::create_actor(m_registry, m_level.player_start_x, -m_level.player_start_y, 1.0f, PLAYER_TEXTURE);
     
     // render everything else
     for (int y = 0; y < m_level.height; y++) {
         for (int x = 0; x < m_level.width; x++) {
             switch (m_level.tile_at(x, y)) {
                 case MASK_WALL:
-                    m_walls.emplace_back(engine::entities::create_actor(m_registry, x, -y, 5.0f, WALL_TEXTURE));
+                    m_walls.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 5.0f, WALL_TEXTURE));
                     break;
                 case MASK_BOX:
-                    m_crates.emplace_back(engine::entities::create_actor(m_registry, x, -y, 3.0f, CRATE_TEXTURE));
+                    m_crates.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 3.0f, CRATE_TEXTURE));
                     break;
                 case MASK_TARGET:
-                    m_targets.emplace_back(engine::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
+                    m_targets.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
                     break;
                 case BOX_ON_TARGET:
-                    m_targets.emplace_back(engine::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
-                    m_crates.emplace_back(engine::entities::create_actor(m_registry, x, -y, 5.0f, CRATE_TEXTURE));
+                    m_targets.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
+                    m_crates.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 5.0f, CRATE_TEXTURE));
                     break;
                 default:
                     break;
@@ -101,13 +101,13 @@ void LevelScene::load_level(size_t level_id) {
     float x_min = std::floor(centre_x - width / 2.0f);
     float x_max = std::ceil(centre_x + width / 2.0f);
 
-    m_camera = engine::entities::create_camera(m_registry, centre_x, centre_y, width, height);
+    m_camera = bolt::entities::create_camera(m_registry, centre_x, centre_y, width, height);
     m_registry.emplace<ActiveComponent>(m_camera);
 
     // generate static grass background to fill the camera area
     for (float y = y_min; y >= y_max; y -= 1.0f) {
         for (float x = x_min; x <= x_max; x += 1.0f) {
-            m_background.emplace_back(engine::entities::create_actor(m_registry, x, y, 0.0f, BACKGROUND_TEXTURE));
+            m_background.emplace_back(bolt::entities::create_actor(m_registry, x, y, 0.0f, BACKGROUND_TEXTURE));
         }
     }
 }

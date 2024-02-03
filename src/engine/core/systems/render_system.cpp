@@ -1,13 +1,16 @@
+
 #include "render_system.h"
-#include <GL/glew.h>
-#include <glm/gtx/transform.hpp>
 #include "../subsystems/subsystems.h"
 #include "../components/camera_component.h"
 #include "../components/render_component.h"
 #include "../components/position_component.h"
 #include "../components/active_component.h"
-
 #include "../logging.h"
+
+#include <entt/entt.hpp>
+#include <GL/glew.h>
+#include <glm/gtx/transform.hpp>
+
 RenderSystem::RenderSystem(entt::registry *pRegistry) : ComponentSystem(pRegistry) {
 }
 

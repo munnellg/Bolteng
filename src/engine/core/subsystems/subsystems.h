@@ -1,19 +1,11 @@
 #ifndef CORE_SUBSYSTEMS_SUBSYSTEMS
 #define CORE_SUBSYSTEMS_SUBSYSTEMS
 
-#include <cstdint>
-#include <filesystem>
 #include <functional>
-#include <entt/entt.hpp>
-#include <SDL2/SDL.h>
 
 namespace subsystems {
     int init();
-    void handle_events();
     void quit();
-
-    void register_key_callback(std::function<void(SDL_KeyboardEvent)> keyboard);
-    void register_quit_callback(std::function<void()> cb_quit);
 
     namespace time {
         void pause(uint32_t ms);
@@ -32,8 +24,13 @@ namespace subsystems {
         void set_window_title(char const *title);
     }
 
-    namespace input {
+    namespace events {
         int init();
+
+        void register_quit_callback(std::function<void()> cb_quit);
+
+        void handle_events();
+
         void quit();
     }
 

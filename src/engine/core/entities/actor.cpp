@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace engine {
+namespace bolt {
     namespace entities {
         entt::entity create_actor(entt::registry &registry, float x, float y, float z, int tex_id) {
             entt::entity const actor = registry.create();
