@@ -1,4 +1,3 @@
-
 #include "render_system.h"
 #include "../subsystems/subsystems.h"
 #include "../components/camera_component.h"

@@ -17,6 +17,10 @@ public:
 private:
     void clear_level();
 
+    void spawnCrate(float x, float y);
+    void spawnPlayer(float x, float y);
+    void spawnWall(float x, float y);
+
     entt::registry m_registry;
     entt::entity m_actor;
 
@@ -30,8 +34,11 @@ private:
     entt::entity m_framerate;
 
     std::vector<ComponentSystem *> m_systems;
-    FramerateSystem m_framerateSystem;
+
     RenderSystem m_renderSystem;
+    MoveSystem m_moveSystem;
+    CollisionSystem m_collisionSystem;
+    FramerateSystem m_framerateSystem;
 };
 
 #endif // SCENE_LEVEL

@@ -27,9 +27,7 @@ namespace subsystems {
     namespace events {
         int init();
 
-        void register_quit_callback(std::function<void()> cb_quit);
-
-        void handle_events();
+        void process();
 
         void quit();
     }

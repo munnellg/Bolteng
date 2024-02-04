@@ -2,6 +2,8 @@
 #include "../engine/core/engine.h"
 #include "../engine/core/logging.h"
 #include "../engine/core/components/active_component.h"
+#include "../engine/core/components/move_component.h"
+#include "../engine/core/input/input.h"
 
 #include <algorithm>
 #include <GL/glew.h>
@@ -13,13 +15,19 @@ int const BACKGROUND_TEXTURE = 24;
 int const CRATE_TEXTURE      = 13;
 int const TARGET_TEXTURE     = 26;
 
+using namespace bolt::input;
+
 LevelScene::LevelScene() : 
         m_registry(),
+        m_moveSystem(&m_registry),
         m_framerateSystem(&m_registry),
+        m_collisionSystem(&m_registry),
         m_renderSystem(&m_registry),
         m_player((entt::entity) 0xFFFFFFFF), // random uninitialized name entity id
         m_camera((entt::entity) 0xFFFFFFFF)
 {
+    m_systems.push_back(&m_collisionSystem);
+    m_systems.push_back(&m_moveSystem);
     m_systems.push_back(&m_framerateSystem);
     m_systems.push_back(&m_renderSystem);
 
@@ -51,31 +59,73 @@ void LevelScene::clear_level() {
     }
 }
 
+void LevelScene::spawnPlayer(float x, float y) {
+    // render player
+    m_player = bolt::entities::create_actor(m_registry, x, y, 1.0f, PLAYER_TEXTURE);
+    
+    MoveComponent moveComponent;
+    moveComponent.m_direction = glm::vec3(0.0f, 0.0f, 0.0f);
+    moveComponent.m_speed = 1.0f;
+    m_registry.emplace<MoveComponent>(m_player, moveComponent);
+    
+    CollisionComponent collideComponent;
+    m_registry.emplace<CollisionComponent>(m_player, collideComponent);
+
+    // bind movement controls to the player
+    auto* pMoveComponent = m_registry.try_get<MoveComponent>(m_player);  
+    keyboard.bind(KEY_W, std::bind(&MoveComponent::moveUp, pMoveComponent));
+    keyboard.bind(KEY_S, std::bind(&MoveComponent::moveDown, pMoveComponent));
+    keyboard.bind(KEY_A, std::bind(&MoveComponent::moveLeft, pMoveComponent));
+    keyboard.bind(KEY_D, std::bind(&MoveComponent::moveRight, pMoveComponent));
+
+    bolt::input::controllers[0].bindButton(BUTTON_DPAD_UP, std::bind(&MoveComponent::moveUp, pMoveComponent));
+    bolt::input::controllers[0].bindButton(BUTTON_DPAD_DOWN, std::bind(&MoveComponent::moveDown, pMoveComponent));
+    bolt::input::controllers[0].bindButton(BUTTON_DPAD_LEFT, std::bind(&MoveComponent::moveLeft, pMoveComponent));
+    bolt::input::controllers[0].bindButton(BUTTON_DPAD_RIGHT, std::bind(&MoveComponent::moveRight, pMoveComponent));
+}
+
+void LevelScene::spawnWall(float x, float y) {
+    auto wall = bolt::entities::create_actor(m_registry, x, y, 5.0f, WALL_TEXTURE);
+
+    CollisionComponent collideComponent;
+    m_registry.emplace<CollisionComponent>(wall, collideComponent);
+
+    m_walls.emplace_back(wall);
+}
+
+void LevelScene::spawnCrate(float x, float y) {
+    auto crate = bolt::entities::create_actor(m_registry, x, y, 3.0f, CRATE_TEXTURE);
+
+    CollisionComponent collideComponent;
+    m_registry.emplace<CollisionComponent>(crate, collideComponent);
+
+    m_crates.emplace_back(crate);
+}
+
 void LevelScene::load_level(size_t level_id) {
 
     clear_level();
 
     m_level = level_load(level_id);
-    
-    // render player
-    m_player = bolt::entities::create_actor(m_registry, m_level.player_start_x, -m_level.player_start_y, 1.0f, PLAYER_TEXTURE);
+
+    spawnPlayer(m_level.player_start_x, -m_level.player_start_y);
     
     // render everything else
     for (int y = 0; y < m_level.height; y++) {
         for (int x = 0; x < m_level.width; x++) {
             switch (m_level.tile_at(x, y)) {
                 case MASK_WALL:
-                    m_walls.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 5.0f, WALL_TEXTURE));
+                    spawnWall(x, -y);
                     break;
                 case MASK_BOX:
-                    m_crates.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 3.0f, CRATE_TEXTURE));
+                    spawnCrate(x, -y);
                     break;
                 case MASK_TARGET:
                     m_targets.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
                     break;
                 case BOX_ON_TARGET:
                     m_targets.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
-                    m_crates.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 5.0f, CRATE_TEXTURE));
+                    spawnCrate(x, -y);
                     break;
                 default:
                     break;

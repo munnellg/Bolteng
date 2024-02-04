@@ -19,7 +19,15 @@ bool Sokoban::init() {
         return false;
     }
 
-    subsystems::events::register_quit_callback(std::bind(&Sokoban::quit_main_loop, this));
+    bolt::input::controllers[0].bindButton(BUTTON_DPAD_UP, std::bind(&Sokoban::next_level, this));
+    bolt::input::controllers[0].bindButton(BUTTON_DPAD_DOWN, std::bind(&Sokoban::prev_level, this));
+    bolt::input::controllers[0].bindEvent(CONTROLLER_CONNECT_EVENT, std::bind(&Sokoban::player_joined, this));
+    bolt::input::controllers[0].bindEvent(CONTROLLER_DISCONNECT_EVENT, std::bind(&Sokoban::player_left, this));
+
+    bolt::input::keyboard.bind(KEY_UP, std::bind(&Sokoban::next_level, this));
+    bolt::input::keyboard.bind(KEY_DOWN, std::bind(&Sokoban::prev_level, this));
+    bolt::input::keyboard.bind(KEY_ESCAPE, std::bind(&Sokoban::quit_main_loop, this));
+    bolt::input::platform.bind(PLATFORM_QUIT, std::bind(&Sokoban::quit_main_loop, this));
 
     return true;
 }
@@ -34,32 +42,46 @@ bool Sokoban::play() {
         last = curr;
         curr = subsystems::time::get_ticks();
 
-        subsystems::events::handle_events();
-        update();
+        subsystems::events::process();
         m_level.update(curr - last);
     } 
 
     return true;
 }
 
-void Sokoban::update()  {
-    if (keyboard.m_keystate[Keyboard::KEY_UP]) {
-        if (--m_current_level >= 60) {
-            m_current_level = 59;
-        }
-        m_level.load_level(m_current_level);
+int Sokoban::prev_level() {
+    if (--m_current_level >= 60) {
+        m_current_level = 59;
     }
 
-    if (keyboard.m_keystate[Keyboard::KEY_DOWN]) {
-        if (++m_current_level >= 60) {
-            m_current_level = 0;
-        }
-        m_level.load_level(m_current_level);
-    }
+    m_level.load_level(m_current_level);
+
+    return 0;
 }
 
-void Sokoban::quit_main_loop() {
+int Sokoban::next_level() {
+    if (++m_current_level >= 60) {
+        m_current_level = 0;
+    }
+
+    m_level.load_level(m_current_level);
+
+    return 0;
+}
+
+int Sokoban::player_joined() {
+    LOG_INFO("Player joined");
+    return 0;
+}
+
+int Sokoban::player_left() {
+    LOG_INFO("Player left");
+    return 0;
+}
+
+int Sokoban::quit_main_loop() {
     m_quit = true;
+    return 0;
 }
 
 void Sokoban::quit() {
