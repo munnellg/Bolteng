@@ -3,6 +3,7 @@
 
 #include "../bolteng/bolteng.h"
 #include "../model/level.h"
+#include "../model/controller.h"
 
 #include <cstdint>
 #include <vector>
@@ -35,6 +36,8 @@ private:
     entt::entity m_framerate;
 
     std::vector<ComponentSystem *> m_systems;
+
+    Controller m_playerController;
 
     RenderSystem m_renderSystem;
     MoveSystem m_moveSystem;

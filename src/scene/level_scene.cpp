@@ -23,8 +23,8 @@ LevelScene::LevelScene() :
         m_framerateSystem(&m_registry),
         m_collisionSystem(&m_registry),
         m_renderSystem(&m_registry),
-        m_player((entt::entity) 0xFFFFFFFF), // random uninitialized name entity id
-        m_camera((entt::entity) 0xFFFFFFFF)
+        m_player(UNBOUND_ENTITY), // random uninitialized name entity id
+        m_camera(UNBOUND_ENTITY)
 {
     m_systems.push_back(&m_collisionSystem);
     m_systems.push_back(&m_moveSystem);
@@ -63,32 +63,18 @@ void LevelScene::spawnPlayer(float x, float y) {
     // render player
     m_player = bolt::entities::create_actor(m_registry, x, y, 1.0f, PLAYER_TEXTURE);
     
-    MoveComponent moveComponent;
-    moveComponent.m_direction = glm::vec3(0.0f, 0.0f, 0.0f);
-    moveComponent.m_speed = 4.0f;
-    m_registry.emplace<MoveComponent>(m_player, moveComponent);
-    
-    CollisionComponent collideComponent;
-    m_registry.emplace<CollisionComponent>(m_player, collideComponent);
+    // player can bump into things
+    m_registry.emplace<CollisionComponent>(m_player);
 
-    // bind movement controls to the player
-    auto* pMoveComponent = m_registry.try_get<MoveComponent>(m_player);  
-    keyboard.bind(KEY_W, std::bind(&MoveComponent::moveUp, pMoveComponent));
-    keyboard.bind(KEY_S, std::bind(&MoveComponent::moveDown, pMoveComponent));
-    keyboard.bind(KEY_A, std::bind(&MoveComponent::moveLeft, pMoveComponent));
-    keyboard.bind(KEY_D, std::bind(&MoveComponent::moveRight, pMoveComponent));
-
-    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_UP, std::bind(&MoveComponent::moveUp, pMoveComponent));
-    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_DOWN, std::bind(&MoveComponent::moveDown, pMoveComponent));
-    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_LEFT, std::bind(&MoveComponent::moveLeft, pMoveComponent));
-    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_RIGHT, std::bind(&MoveComponent::moveRight, pMoveComponent));
+    // player can push things that are pushable
+    m_registry.emplace<PusherComponent>(m_player);
 }
 
 void LevelScene::spawnWall(float x, float y) {
     auto wall = bolt::entities::create_actor(m_registry, x, y, 5.0f, WALL_TEXTURE);
 
-    CollisionComponent collideComponent;
-    m_registry.emplace<CollisionComponent>(wall, collideComponent);
+    // walls can bump into things
+    m_registry.emplace<CollisionComponent>(wall);
 
     m_walls.emplace_back(wall);
 }
@@ -96,8 +82,11 @@ void LevelScene::spawnWall(float x, float y) {
 void LevelScene::spawnCrate(float x, float y) {
     auto crate = bolt::entities::create_actor(m_registry, x, y, 3.0f, CRATE_TEXTURE);
 
-    CollisionComponent collideComponent;
-    m_registry.emplace<CollisionComponent>(crate, collideComponent);
+    // crates can bump into things
+    m_registry.emplace<CollisionComponent>(crate);
+
+    // crates are pushable by a pusher
+    m_registry.emplace<PushableComponent>(crate);
 
     m_crates.emplace_back(crate);
 }
@@ -166,6 +155,11 @@ void LevelScene::load_level(size_t level_id) {
             m_background.emplace_back(bolt::entities::create_actor(m_registry, x, y, 0.0f, BACKGROUND_TEXTURE));
         }
     }
+
+    // bind movement controls to the player
+    m_playerController.bind(m_player, &m_registry);
+    m_playerController.bind(keyboard);
+    m_playerController.bind(game_pads[0]);
 }
 
 void LevelScene::update(uint64_t delta) {

@@ -5,6 +5,8 @@
 #include "camera_component.h"
 #include "collision_component.h"
 #include "framerate_component.h"
+#include "pushable_component.h"
+#include "pusher_component.h"
 #include "render_component.h"
 #include "position_component.h"
 #include "move_component.h"

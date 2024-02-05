@@ -2,6 +2,7 @@
 #define DEFINES_H
 
 #include <cstdint>
+#include <entt/entt.hpp>
 
 namespace bolt {
     namespace input {
@@ -10,6 +11,8 @@ namespace bolt {
             typedef uint32_t ButtonCode;
             typedef uint32_t AxisCode;
             typedef uint32_t GamePadEventCode;
+
+            entt::entity const UNBOUND_ENTITY = (entt::entity) 0xFFFFFFFF;
 
             int const MAX_GAME_PADS = 4;
 
