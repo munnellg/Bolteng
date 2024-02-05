@@ -32,6 +32,7 @@ void RenderSystem::update(uint64_t deltaTime) {
     GLuint mvp_loc = glGetUniformLocation(subsystems::render::shader_program, "mvp");
     
     auto view = m_pRegistry->view<RenderComponent, PositionComponent>();
+    view.use<RenderComponent>();
     for (auto [entity, render, transform]: view.each()) {
         glm::mat4 mvp = cc.m_projection * cc.m_view * glm::translate(transform.m_position);
         glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, &mvp[0][0]);

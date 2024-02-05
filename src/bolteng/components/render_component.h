@@ -11,13 +11,15 @@ struct RenderComponent {
     uint32_t m_ebo;
     uint32_t m_uvs;
     uint32_t m_nVertices;
+    uint32_t m_layer;
     
     RenderComponent()
         : m_vbo(0),
         m_vao(0),
         m_ebo(0),
         m_uvs(0),
-        m_nVertices(0)
+        m_nVertices(0),
+        m_layer(0)
     {}
 
     RenderComponent(RenderComponent const &rc)
@@ -25,7 +27,8 @@ struct RenderComponent {
         m_vao(rc.m_vao),
         m_ebo(rc.m_ebo),
         m_uvs(rc.m_uvs),
-        m_nVertices(rc.m_nVertices)
+        m_nVertices(rc.m_nVertices),
+        m_layer(rc.m_layer)
     {
     }
 
@@ -34,7 +37,8 @@ struct RenderComponent {
         m_vao(std::exchange(rc.m_vao, 0)),
         m_ebo(std::exchange(rc.m_ebo, 0)),
         m_uvs(std::exchange(rc.m_uvs, 0)),
-        m_nVertices(std::exchange(rc.m_nVertices, 0))
+        m_nVertices(std::exchange(rc.m_nVertices, 0)),
+        m_layer(std::exchange(rc.m_layer, 0))
     {}
     
     RenderComponent& operator=(RenderComponent const &rc) {
@@ -43,6 +47,7 @@ struct RenderComponent {
         m_ebo = rc.m_ebo;
         m_uvs = rc.m_uvs;
         m_nVertices = rc.m_nVertices;
+        m_layer = rc.m_layer;
         return *this;
     }
  
@@ -52,6 +57,7 @@ struct RenderComponent {
         m_ebo = std::exchange(rc.m_ebo, 0);
         m_uvs = std::exchange(rc.m_uvs, 0);
         m_nVertices = std::exchange(rc.m_nVertices, 0);
+        m_layer = std::exchange(rc.m_layer, 0);
         return *this;
     }
 

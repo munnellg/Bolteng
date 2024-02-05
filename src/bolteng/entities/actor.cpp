@@ -55,6 +55,7 @@ namespace bolt {
             glEnableVertexAttribArray(1);
 
             rcTile.m_nVertices = sizeof(indices);
+            rcTile.m_layer = static_cast<uint32_t>(z);
             registry.emplace<RenderComponent>(actor, std::move(rcTile));
 
             PositionComponent tcPosition;

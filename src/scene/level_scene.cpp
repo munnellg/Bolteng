@@ -24,7 +24,7 @@ LevelScene::LevelScene() :
         m_collisionSystem(&m_registry),
         m_renderSystem(&m_registry),
         m_player(UNBOUND_ENTITY), // random uninitialized name entity id
-        m_camera(UNBOUND_ENTITY)
+        m_worldCamera(UNBOUND_ENTITY)
 {
     m_systems.push_back(&m_collisionSystem);
     m_systems.push_back(&m_moveSystem);
@@ -54,8 +54,8 @@ void LevelScene::clear_level() {
         m_registry.destroy(m_player); 
     }
 
-    if (m_registry.valid(m_camera)) { 
-        m_registry.destroy(m_camera); 
+    if (m_registry.valid(m_worldCamera)) { 
+        m_registry.destroy(m_worldCamera); 
     }
 }
 
@@ -146,8 +146,12 @@ void LevelScene::load_level(size_t level_id) {
     float x_min = std::floor(centre_x - width / 2.0f);
     float x_max = std::ceil(centre_x + width / 2.0f);
 
-    m_camera = bolt::entities::create_camera(m_registry, centre_x, centre_y, width, height);
-    m_registry.emplace<ActiveComponent>(m_camera);
+    m_worldCamera  = bolt::entities::create_camera(m_registry, centre_x, centre_y, width, height);
+    m_playerCamera = bolt::entities::create_camera(m_registry, m_level.player_start_x, -m_level.player_start_y, 8.0f * subsystems::display::aspect, 8.0f);
+
+    m_registry.emplace<ActiveComponent>(m_worldCamera);
+
+    bolt::input::keyboard.bind(bolt::input::KEY_TAB, std::bind(&LevelScene::switchCamera, this));
 
     // generate static grass background to fill the camera area
     for (float y = y_min; y >= y_max; y -= 1.0f) {
@@ -160,6 +164,30 @@ void LevelScene::load_level(size_t level_id) {
     m_playerController.bind(m_player, &m_registry);
     m_playerController.bind(keyboard);
     m_playerController.bind(game_pads[0]);
+
+    m_registry.sort<RenderComponent>([](const RenderComponent &lhs, const RenderComponent &rhs) {
+        return lhs.m_layer < rhs.m_layer;
+    });
+}
+
+int LevelScene::switchCamera() {
+
+    auto cam_view = m_registry.view<CameraComponent, ActiveComponent>();
+    auto camera = cam_view.front();
+
+    if (!m_registry.valid(camera)) {
+        return 1;
+    }
+
+    m_registry.remove<ActiveComponent>(camera);
+
+    if (camera == m_playerCamera) {
+        m_registry.emplace<ActiveComponent>(m_worldCamera);
+    } else {
+        m_registry.emplace<ActiveComponent>(m_playerCamera);
+    }
+
+    return 0;
 }
 
 void LevelScene::update(uint64_t delta) {

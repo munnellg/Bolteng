@@ -14,6 +14,7 @@ public:
     LevelScene();
     void update(uint64_t delta);
     void load_level(size_t level_id);
+    int switchCamera();
 
 private:
     void clear_level();
@@ -22,6 +23,7 @@ private:
     void spawnTarget(float x, float y);
     void spawnPlayer(float x, float y);
     void spawnWall(float x, float y);
+    entt::entity spawnCamera(float x, float y, float w, float h);
 
     entt::registry m_registry;
     entt::entity m_actor;
@@ -31,8 +33,10 @@ private:
     std::vector<entt::entity> m_background;
     std::vector<entt::entity> m_crates;
     std::vector<entt::entity> m_targets;
+
     entt::entity m_player;
-    entt::entity m_camera;
+    entt::entity m_worldCamera;
+    entt::entity m_playerCamera;
     entt::entity m_framerate;
 
     std::vector<ComponentSystem *> m_systems;
