@@ -12,7 +12,7 @@ using namespace bolt::input;
 namespace subsystems {
     namespace events {
         // handles to joystick/controller devices
-        std::array<SDL_GameController*, MAX_CONTROLLERS> pControllers = {0};
+        std::array<SDL_GameController*, MAX_GAME_PADS> pControllers = {0};
 
         int find_open_controller_slot(int start) {
             int i = start;
@@ -172,7 +172,7 @@ namespace subsystems {
                         int iController = get_controller_index(e.caxis.which);
 
                         if (iController >= 0) {
-                            controllers[iController].axisMotion(e.caxis.axis, static_cast<float>(e.caxis.value) / 32767.0f);
+                            game_pads[iController].axisMotion(e.caxis.axis, static_cast<float>(e.caxis.value) / 32767.0f);
                         }
 
                         break;
@@ -182,7 +182,7 @@ namespace subsystems {
                         int iController = get_controller_index(e.cbutton.which);
 
                         if (iController >= 0) {
-                            controllers[iController].buttonDown(e.cbutton.button);
+                            game_pads[iController].buttonDown(e.cbutton.button);
                         }
 
                         break;
@@ -192,7 +192,7 @@ namespace subsystems {
                         int iController = get_controller_index(e.cbutton.which);
 
                         if (iController >= 0) {
-                            controllers[iController].buttonUp(e.cbutton.button);
+                            game_pads[iController].buttonUp(e.cbutton.button);
                         }
 
                         break;
@@ -204,7 +204,7 @@ namespace subsystems {
                         if (iControllerHandle >= 0) {
                             LOG_DEBUG("connecting to %d", iControllerHandle);
                             if (connect_controller(e.cdevice.which, iControllerHandle)) {
-                                controllers[iControllerHandle].broadcast(CONTROLLER_CONNECT_EVENT);
+                                game_pads[iControllerHandle].broadcast(GAME_PAD_CONNECT_EVENT);
                             }
                         }
 
@@ -216,7 +216,7 @@ namespace subsystems {
 
                         if (iControllerHandle >= 0) {
                             if (disconnect_controller(iControllerHandle)) {
-                                controllers[iControllerHandle].broadcast(CONTROLLER_DISCONNECT_EVENT);
+                                game_pads[iControllerHandle].broadcast(GAME_PAD_DISCONNECT_EVENT);
                             }
                         }
 

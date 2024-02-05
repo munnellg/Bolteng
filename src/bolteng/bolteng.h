@@ -1,5 +1,5 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef BOLTENG_H
+#define BOLTENG_H
 
 #include "logging.h"
 #include "defines.h"

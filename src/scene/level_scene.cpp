@@ -1,9 +1,9 @@
 #include "level_scene.h"
-#include "../engine/core/engine.h"
-#include "../engine/core/logging.h"
-#include "../engine/core/components/active_component.h"
-#include "../engine/core/components/move_component.h"
-#include "../engine/core/input/input.h"
+#include "../bolteng/bolteng.h"
+#include "../bolteng/logging.h"
+#include "../bolteng/components/active_component.h"
+#include "../bolteng/components/move_component.h"
+#include "../bolteng/input/input.h"
 
 #include <algorithm>
 #include <GL/glew.h>
@@ -65,7 +65,7 @@ void LevelScene::spawnPlayer(float x, float y) {
     
     MoveComponent moveComponent;
     moveComponent.m_direction = glm::vec3(0.0f, 0.0f, 0.0f);
-    moveComponent.m_speed = 1.0f;
+    moveComponent.m_speed = 4.0f;
     m_registry.emplace<MoveComponent>(m_player, moveComponent);
     
     CollisionComponent collideComponent;
@@ -78,10 +78,10 @@ void LevelScene::spawnPlayer(float x, float y) {
     keyboard.bind(KEY_A, std::bind(&MoveComponent::moveLeft, pMoveComponent));
     keyboard.bind(KEY_D, std::bind(&MoveComponent::moveRight, pMoveComponent));
 
-    bolt::input::controllers[0].bindButton(BUTTON_DPAD_UP, std::bind(&MoveComponent::moveUp, pMoveComponent));
-    bolt::input::controllers[0].bindButton(BUTTON_DPAD_DOWN, std::bind(&MoveComponent::moveDown, pMoveComponent));
-    bolt::input::controllers[0].bindButton(BUTTON_DPAD_LEFT, std::bind(&MoveComponent::moveLeft, pMoveComponent));
-    bolt::input::controllers[0].bindButton(BUTTON_DPAD_RIGHT, std::bind(&MoveComponent::moveRight, pMoveComponent));
+    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_UP, std::bind(&MoveComponent::moveUp, pMoveComponent));
+    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_DOWN, std::bind(&MoveComponent::moveDown, pMoveComponent));
+    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_LEFT, std::bind(&MoveComponent::moveLeft, pMoveComponent));
+    bolt::input::game_pads[0].bindButton(BUTTON_DPAD_RIGHT, std::bind(&MoveComponent::moveRight, pMoveComponent));
 }
 
 void LevelScene::spawnWall(float x, float y) {
@@ -100,6 +100,12 @@ void LevelScene::spawnCrate(float x, float y) {
     m_registry.emplace<CollisionComponent>(crate, collideComponent);
 
     m_crates.emplace_back(crate);
+}
+
+
+void LevelScene::spawnTarget(float x, float y) {
+    auto target = bolt::entities::create_actor(m_registry, x, y, 4.0f, TARGET_TEXTURE);
+    m_targets.emplace_back(target);
 }
 
 void LevelScene::load_level(size_t level_id) {
@@ -121,10 +127,10 @@ void LevelScene::load_level(size_t level_id) {
                     spawnCrate(x, -y);
                     break;
                 case MASK_TARGET:
-                    m_targets.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
+                    spawnTarget(x, -y);
                     break;
                 case BOX_ON_TARGET:
-                    m_targets.emplace_back(bolt::entities::create_actor(m_registry, x, -y, 4.0f, TARGET_TEXTURE));
+                    spawnTarget(x, -y);
                     spawnCrate(x, -y);
                     break;
                 default:

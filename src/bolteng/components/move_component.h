@@ -11,28 +11,24 @@ struct MoveComponent {
     int moveUp() {
         m_direction[0] = 0.0f;
         m_direction[1] = 1.0f;
-        LOG_DEBUG("%f %f %f", m_direction[0], m_direction[1], m_direction[2]);
         return 0;
     }
 
     int moveDown() {
         m_direction[0] =  0.0f;
         m_direction[1] = -1.0f;
-        LOG_DEBUG("%f %f %f", m_direction[0], m_direction[1], m_direction[2]);
         return 0;
     }
 
     int moveLeft() {
         m_direction[0] = -1.0f;
         m_direction[1] =  0.0f;
-        LOG_DEBUG("%f %f %f", m_direction[0], m_direction[1], m_direction[2]);
         return 0;
     }
 
     int moveRight() {
         m_direction[0] = 1.0f;
         m_direction[1] = 0.0f;
-        LOG_DEBUG("%f %f %f", m_direction[0], m_direction[1], m_direction[2]);
         return 0;
     }
 };

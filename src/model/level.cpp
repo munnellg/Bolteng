@@ -5,7 +5,7 @@
 #include <vector>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include "../engine/core/logging.h"
+#include "../bolteng/logging.h"
 
 Level::Level() noexcept {
     width = 0;

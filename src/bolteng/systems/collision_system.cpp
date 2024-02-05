@@ -22,7 +22,8 @@ void CollisionSystem::update(uint64_t deltaTime) {
     auto allCollidable    = m_pRegistry->view<PositionComponent, CollisionComponent>();
 
     for (auto [mEntity, mMove, mPosition, mCollision]: movingCollidable.each()) {
-        glm::vec3 newPos = mPosition.m_position + mMove.m_direction;
+        glm::vec3 newPos = mPosition.m_position + mMove.m_direction * glm::vec3((mMove.m_speed * deltaTime) / 1000.0f);
+        // glm::vec3 newPos = mPosition.m_position + mMove.m_direction;
 
         for (auto [cEntity, cPosition, cCollision]: allCollidable.each()) {
             // don't compare an entity to itself

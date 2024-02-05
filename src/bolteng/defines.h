@@ -9,10 +9,9 @@ namespace bolt {
             typedef uint32_t PlatformCode;
             typedef uint32_t ButtonCode;
             typedef uint32_t AxisCode;
-            typedef uint32_t ControllerEventCode;
+            typedef uint32_t GamePadEventCode;
 
-            int const MAX_CONTROLLERS            = 4;
-            int const CONTROLLER_STATE_SYNC_FREQ = 10000;
+            int const MAX_GAME_PADS = 4;
 
             // These values are platform dependent
             // They will be defined in the subsystems module on a per-platform basis
@@ -26,8 +25,8 @@ namespace bolt {
             // ===============================================================
             // Game Controller 
             // ===============================================================
-            extern ControllerEventCode const CONTROLLER_CONNECT_EVENT;
-            extern ControllerEventCode const CONTROLLER_DISCONNECT_EVENT;
+            extern GamePadEventCode const GAME_PAD_CONNECT_EVENT;
+            extern GamePadEventCode const GAME_PAD_DISCONNECT_EVENT;
 
             extern AxisCode const AXIS_LEFT_X;
             extern AxisCode const AXIS_LEFT_Y;

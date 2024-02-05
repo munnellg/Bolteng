@@ -1,7 +1,8 @@
 #include "sokoban.h"
+#include "bolteng/defines.h"
 #include "scene/level_scene.h"
-#include "engine/core/subsystems/subsystems.h"
-#include "engine/core/logging.h"
+#include "bolteng/subsystems/subsystems.h"
+#include "bolteng/logging.h"
 
 #include <cstdint>
 #include <iostream>
@@ -19,10 +20,10 @@ bool Sokoban::init() {
         return false;
     }
 
-    bolt::input::controllers[0].bindButton(BUTTON_DPAD_UP, std::bind(&Sokoban::next_level, this));
-    bolt::input::controllers[0].bindButton(BUTTON_DPAD_DOWN, std::bind(&Sokoban::prev_level, this));
-    bolt::input::controllers[0].bindEvent(CONTROLLER_CONNECT_EVENT, std::bind(&Sokoban::player_joined, this));
-    bolt::input::controllers[0].bindEvent(CONTROLLER_DISCONNECT_EVENT, std::bind(&Sokoban::player_left, this));
+    bolt::input::game_pads[0].bindButton(BUTTON_LEFT_SHOULDER, std::bind(&Sokoban::prev_level, this));
+    bolt::input::game_pads[0].bindButton(BUTTON_RIGHT_SHOULDER, std::bind(&Sokoban::next_level, this));
+    bolt::input::game_pads[0].bindEvent(GAME_PAD_CONNECT_EVENT, std::bind(&Sokoban::player_joined, this));
+    bolt::input::game_pads[0].bindEvent(GAME_PAD_DISCONNECT_EVENT, std::bind(&Sokoban::player_left, this));
 
     bolt::input::keyboard.bind(KEY_UP, std::bind(&Sokoban::next_level, this));
     bolt::input::keyboard.bind(KEY_DOWN, std::bind(&Sokoban::prev_level, this));

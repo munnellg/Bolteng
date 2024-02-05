@@ -1,7 +1,7 @@
 #ifndef SCENE_LEVEL
 #define SCENE_LEVEL
 
-#include "../engine/core/engine.h"
+#include "../bolteng/bolteng.h"
 #include "../model/level.h"
 
 #include <cstdint>
@@ -18,6 +18,7 @@ private:
     void clear_level();
 
     void spawnCrate(float x, float y);
+    void spawnTarget(float x, float y);
     void spawnPlayer(float x, float y);
     void spawnWall(float x, float y);
 

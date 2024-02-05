@@ -7,8 +7,8 @@ namespace bolt {
         // Map SDL's keycodes to Bolt's keycodes for the SDL build
         PlatformCode const PLATFORM_QUIT = SDL_QUIT;
 
-        ControllerEventCode const CONTROLLER_CONNECT_EVENT    = SDL_CONTROLLERDEVICEADDED;
-        ControllerEventCode const CONTROLLER_DISCONNECT_EVENT = SDL_CONTROLLERDEVICEREMOVED;
+        GamePadEventCode const GAME_PAD_CONNECT_EVENT    = SDL_CONTROLLERDEVICEADDED;
+        GamePadEventCode const GAME_PAD_DISCONNECT_EVENT = SDL_CONTROLLERDEVICEREMOVED;
 
         AxisCode const AXIS_LEFT_X        = SDL_CONTROLLER_AXIS_LEFTX;
         AxisCode const AXIS_LEFT_Y        = SDL_CONTROLLER_AXIS_LEFTY;
