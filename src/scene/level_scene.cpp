@@ -35,6 +35,19 @@ LevelScene::LevelScene() :
     m_registry.emplace<FramerateComponent>(m_framerate);
 }
 
+void LevelScene::onEnter() {
+}
+
+void LevelScene::update(uint64_t deltaTime) {
+    for (auto system : m_systems) {
+        system->update(deltaTime);
+    }
+}
+
+void LevelScene::onExit() {
+
+}
+
 void LevelScene::clear_level() {
     auto destroy = [&](entt::entity const &e) { m_registry.destroy(e); };
 
@@ -189,11 +202,4 @@ int LevelScene::switchCamera() {
 
     return 0;
 }
-
-void LevelScene::update(uint64_t delta) {
-    for (auto system : m_systems) {
-        system->update(delta);
-    }
-}
-
 

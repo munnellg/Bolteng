@@ -94,9 +94,8 @@ namespace subsystems {
         }
 
         void process() {
-            static int last_poll = 0;
-
             SDL_Event e;
+
             while (SDL_PollEvent(&e)) {
                 switch (e.type) {
                     // platform events

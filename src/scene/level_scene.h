@@ -1,6 +1,7 @@
 #ifndef SCENE_LEVEL
 #define SCENE_LEVEL
 
+#include "../bolteng/application/scene.h"
 #include "../bolteng/bolteng.h"
 #include "../model/level.h"
 #include "../model/controller.h"
@@ -8,13 +9,16 @@
 #include <cstdint>
 #include <vector>
 
-class LevelScene {
+class LevelScene : public Scene {
 public:
 
     LevelScene();
-    void update(uint64_t delta);
     void load_level(size_t level_id);
     int switchCamera();
+
+    void onEnter() override;
+    void update(uint64_t deltaTime) override;
+    void onExit() override;
 
 private:
     void clear_level();

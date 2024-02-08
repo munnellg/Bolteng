@@ -2,23 +2,20 @@
 #define SOKOBAN_H
 
 #include "scene/level_scene.h"
+#include "bolteng/application/boltapp.h"
 
-#define GAME_NAME "SOKOBAN"
-
-class Sokoban {
+class Sokoban : public bolt::BoltApp {
 public:
     Sokoban();
 
-    bool init();
-    bool play();
-    void quit();
+    void update(uint64_t const deltaTime);
+
+    bool post_init();
 
     int next_level();
     int prev_level();
     int player_joined();
     int player_left();
-
-    int quit_main_loop();
 
     LevelScene m_level;
     size_t m_current_level; 
