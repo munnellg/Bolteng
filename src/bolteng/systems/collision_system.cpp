@@ -7,7 +7,7 @@
 CollisionSystem::CollisionSystem(entt::registry *pRegistry) : ComponentSystem(pRegistry) {
 }
 
-void CollisionSystem::update(uint64_t deltaTime) {
+void CollisionSystem::update(uint64_t) {
 
     auto movingCollidable = m_pRegistry->view<MoveComponent, PositionComponent, CollisionComponent>();
 

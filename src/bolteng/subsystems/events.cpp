@@ -73,7 +73,7 @@ namespace subsystems {
         }
 
         int get_controller_index(SDL_JoystickID deviceId) {
-            for (int i = 0; i < pControllers.size(); i++) {
+            for (size_t i = 0; i < pControllers.size(); i++) {
                 if (pControllers[i] != nullptr) {
                     SDL_Joystick *j = SDL_GameControllerGetJoystick(pControllers[i]);
                     if (SDL_JoystickInstanceID(j) == deviceId) {
@@ -86,7 +86,7 @@ namespace subsystems {
         }
 
         int init() {
-            for (int i = 0; i < pControllers.size(); i++) { 
+            for (size_t i = 0; i < pControllers.size(); i++) { 
                 pControllers[i] = nullptr; 
             }
 

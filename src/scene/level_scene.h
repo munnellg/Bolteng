@@ -20,6 +20,11 @@ public:
     void update(uint64_t deltaTime) override;
     void onExit() override;
 
+    int next_level();
+    int prev_level();
+    int player_joined();
+    int player_left();
+
 private:
     void clear_level();
 
@@ -30,7 +35,6 @@ private:
     entt::entity spawnCamera(float x, float y, float w, float h);
 
     entt::registry m_registry;
-    entt::entity m_actor;
 
     Level m_level;
     std::vector<entt::entity> m_walls;
@@ -42,6 +46,8 @@ private:
     entt::entity m_worldCamera;
     entt::entity m_playerCamera;
     entt::entity m_framerate;
+
+    size_t m_currentLevel; 
 
     std::vector<ComponentSystem *> m_systems;
 

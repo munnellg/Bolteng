@@ -19,12 +19,14 @@ using namespace bolt::input;
 
 LevelScene::LevelScene() : 
         m_registry(),
-        m_moveSystem(&m_registry),
-        m_framerateSystem(&m_registry),
-        m_collisionSystem(&m_registry),
+        m_player(UNBOUND_ENTITY),
+        m_worldCamera(UNBOUND_ENTITY),
+        m_playerCamera(UNBOUND_ENTITY),
+        m_currentLevel(0),
         m_renderSystem(&m_registry),
-        m_player(UNBOUND_ENTITY), // random uninitialized name entity id
-        m_worldCamera(UNBOUND_ENTITY)
+        m_moveSystem(&m_registry),
+        m_collisionSystem(&m_registry),
+        m_framerateSystem(&m_registry)
 {
     m_systems.push_back(&m_collisionSystem);
     m_systems.push_back(&m_moveSystem);
@@ -36,6 +38,15 @@ LevelScene::LevelScene() :
 }
 
 void LevelScene::onEnter() {
+    bolt::input::game_pads[0].bindButton(bolt::input::BUTTON_LEFT_SHOULDER, std::bind(&LevelScene::prev_level, this));
+    bolt::input::game_pads[0].bindButton(bolt::input::BUTTON_RIGHT_SHOULDER, std::bind(&LevelScene::next_level, this));
+    bolt::input::game_pads[0].bindEvent(bolt::input::GAME_PAD_CONNECT_EVENT, std::bind(&LevelScene::player_joined, this));
+    bolt::input::game_pads[0].bindEvent(bolt::input::GAME_PAD_DISCONNECT_EVENT, std::bind(&LevelScene::player_left, this));
+
+    bolt::input::keyboard.bind(bolt::input::KEY_UP, std::bind(&LevelScene::next_level, this));
+    bolt::input::keyboard.bind(bolt::input::KEY_DOWN, std::bind(&LevelScene::prev_level, this));
+
+    load_level(m_currentLevel);
 }
 
 void LevelScene::update(uint64_t deltaTime) {
@@ -45,7 +56,7 @@ void LevelScene::update(uint64_t deltaTime) {
 }
 
 void LevelScene::onExit() {
-
+    clear_level();
 }
 
 void LevelScene::clear_level() {
@@ -69,6 +80,10 @@ void LevelScene::clear_level() {
 
     if (m_registry.valid(m_worldCamera)) { 
         m_registry.destroy(m_worldCamera); 
+    }
+
+    if (m_registry.valid(m_playerCamera)) {
+        m_registry.destroy(m_playerCamera);
     }
 }
 
@@ -103,7 +118,6 @@ void LevelScene::spawnCrate(float x, float y) {
 
     m_crates.emplace_back(crate);
 }
-
 
 void LevelScene::spawnTarget(float x, float y) {
     auto target = bolt::entities::create_actor(m_registry, x, y, 4.0f, TARGET_TEXTURE);
@@ -174,7 +188,7 @@ void LevelScene::load_level(size_t level_id) {
     }
 
     // bind movement controls to the player
-    m_playerController.bind(m_player, &m_registry);
+    m_playerController.bind(m_targets[0], &m_registry);
     m_playerController.bind(keyboard);
     m_playerController.bind(game_pads[0]);
 
@@ -203,3 +217,32 @@ int LevelScene::switchCamera() {
     return 0;
 }
 
+int LevelScene::prev_level() {
+    if (--m_currentLevel >= 60) {
+        m_currentLevel = 59;
+    }
+
+    load_level(m_currentLevel);
+
+    return 0;
+}
+
+int LevelScene::next_level() {
+    if (++m_currentLevel >= 60) {
+        m_currentLevel = 0;
+    }
+
+    load_level(m_currentLevel);
+
+    return 0;
+}
+
+int LevelScene::player_joined() {
+    LOG_INFO("Player joined");
+    return 0;
+}
+
+int LevelScene::player_left() {
+    LOG_INFO("Player left");
+    return 0;
+}

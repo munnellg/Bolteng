@@ -15,7 +15,7 @@ namespace subsystems {
         GLuint tex;
         std::filesystem::path const vertex_shader_file = "assets/shaders/vshader.glsl";
         std::filesystem::path const fragment_shader_file = "assets/shaders/fshader.glsl";
-        std::filesystem::path const textures_file = "assets/textures/kenny.png";
+        std::filesystem::path const textures_file = "assets/textures/pokemon.png";
 
         int load_file(std::filesystem::path const &path, std::string &buffer) {
             std::ifstream in(path.generic_string());

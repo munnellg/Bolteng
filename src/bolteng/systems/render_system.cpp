@@ -13,7 +13,7 @@
 RenderSystem::RenderSystem(entt::registry *pRegistry) : ComponentSystem(pRegistry) {
 }
 
-void RenderSystem::update(uint64_t deltaTime) {
+void RenderSystem::update(uint64_t) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     

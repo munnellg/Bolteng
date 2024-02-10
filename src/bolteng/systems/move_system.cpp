@@ -8,7 +8,7 @@
 MoveSystem::MoveSystem(entt::registry *pRegistry) : ComponentSystem(pRegistry) {
 }
 
-void MoveSystem::update(uint64_t deltaTime) {
+void MoveSystem::update(uint64_t) {
 
     auto view = m_pRegistry->view<MoveComponent, PositionComponent>();
     for (auto [entity, move, position]: view.each()) {

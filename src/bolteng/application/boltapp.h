@@ -1,26 +1,38 @@
 #ifndef BOLTENG_APPLICATION_BOLTAPP_H
 #define BOLTENG_APPLICATION_BOLTAPP_H
 
+#include "scene.h"
+
 #include <cstdint>
 #include <functional>
+#include <memory>
+#include <string>
 
 namespace bolt {
     class BoltApp {
     public:
-        BoltApp();
-        ~BoltApp() = default;
+        static std::string const DEFAULT_APP_NAME;
 
-        virtual void update(uint64_t const deltaTime) = 0;
+        BoltApp();
+        BoltApp(std::string const &appName);
+
         int main();
-        int const quit_main_loop();
+        int quitMainLoop();
 
     protected:
+        virtual bool preInit()  { return true; }
+        virtual bool postInit() { return true; }
+        virtual bool preQuit()  { return true; }
+        virtual bool postQuit() { return true; }
+
+        std::string const m_appName;
+
         bool m_quit;
-        std::function<bool(void)> m_post_init;
+        std::shared_ptr<Scene> m_currentScene;
 
     private:
-        bool const init();
-        void const quit();
+        bool init();
+        void quit();
     };
 }
 

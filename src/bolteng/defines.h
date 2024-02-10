@@ -12,6 +12,7 @@ namespace bolt {
             typedef uint32_t AxisCode;
             typedef uint32_t GamePadEventCode;
 
+            // random uninitialized name entity id
             entt::entity const UNBOUND_ENTITY = (entt::entity) 0xFFFFFFFF;
 
             int const MAX_GAME_PADS = 4;

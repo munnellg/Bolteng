@@ -1136,7 +1136,7 @@ level_load(size_t level_id) {
     std::istringstream iss(serialized_levels[level_id]);
     iss >> level;
 
-    return std::move(level);
+    return level;
 }
 
 size_t

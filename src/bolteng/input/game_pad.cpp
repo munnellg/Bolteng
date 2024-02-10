@@ -11,9 +11,9 @@ namespace bolt {
         };
 
         GamePad::GamePad(int playerIndex) : 
-            m_playerIndex(playerIndex),
+            m_powerLevel(1.0f),
             m_enabled(0),
-            m_powerLevel(1.0f)
+            m_playerIndex(playerIndex)
         {}
 
         void GamePad::bindButton(ButtonCode button, std::function<int(void)> callback) {

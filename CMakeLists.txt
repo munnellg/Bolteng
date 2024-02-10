@@ -21,6 +21,12 @@ file(GLOB_RECURSE SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 
 add_executable(sokoban ${SOURCE_FILES} ${HEADER_FILES})
 
+if(MSVC)
+  target_compile_options(sokoban PRIVATE /W4 /WX)
+else()
+  target_compile_options(sokoban PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
 # copy over the settings file for the game
 add_custom_command(
     TARGET sokoban PRE_BUILD
