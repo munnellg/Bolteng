@@ -29,8 +29,7 @@ struct RenderComponent {
         m_uvs(rc.m_uvs),
         m_nVertices(rc.m_nVertices),
         m_layer(rc.m_layer)
-    {
-    }
+    {}
 
     RenderComponent(RenderComponent &&rc)
         : m_vbo(std::exchange(rc.m_vbo, 0)),

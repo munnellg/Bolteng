@@ -188,7 +188,7 @@ void LevelScene::load_level(size_t level_id) {
     }
 
     // bind movement controls to the player
-    m_playerController.bind(m_targets[0], &m_registry);
+    m_playerController.bind(m_player, &m_registry);
     m_playerController.bind(keyboard);
     m_playerController.bind(game_pads[0]);
 

@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 
 static SDL_Window *window;
 static SDL_Renderer *renderer;
