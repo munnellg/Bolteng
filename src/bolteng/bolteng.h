@@ -5,6 +5,8 @@
 #include "defines.h"
 
 #include "input/input.h"
+#include "graphics/mesh.h"
+#include "maths/vector.h"
 
 #include "subsystems/subsystems.h"
 #include "components/components.h"

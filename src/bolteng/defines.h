@@ -5,6 +5,16 @@
 #include <entt/entt.hpp>
 
 namespace bolt {
+    namespace status {
+        typedef uint32_t Status;
+
+        Status const SUCCESS                = 0;
+        Status const CORRUPTED_FILE         = 1;
+        Status const FILE_NOT_FOUND         = 2;
+        Status const VERSION_NOT_SUPPORTED  = 3;
+        Status const INFINITE_LOOP_DETECTED = 4;
+    }
+
     namespace input {
             typedef uint32_t ScanCode;
             typedef uint32_t PlatformCode;

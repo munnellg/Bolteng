@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.13)
 project(sokoban)
 
 set(CMAKE_CXX_STANDARD 20)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 
@@ -11,13 +12,13 @@ find_package(SDL2_image REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
-link_libraries(GLEW::GLEW OpenGL::GL SDL2::Main SDL2::Image)
-
 include_directories(${PROJECT_SOURCE_DIR}/vendor/glm)
 include_directories(${PROJECT_SOURCE_DIR}/vendor/entt/single_include)
 
 file(GLOB_RECURSE HEADER_FILES "${PROJECT_SOURCE_DIR}/src/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+
+link_libraries(GLEW::GLEW OpenGL::GL SDL2::Main SDL2::Image)
 
 add_executable(sokoban ${SOURCE_FILES} ${HEADER_FILES})
 
