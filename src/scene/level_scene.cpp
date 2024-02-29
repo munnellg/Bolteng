@@ -15,6 +15,7 @@ int const BACKGROUND_TEXTURE = 24;
 int const CRATE_TEXTURE      = 13;
 int const TARGET_TEXTURE     = 26;
 
+using namespace bolt;
 using namespace bolt::input;
 
 LevelScene::LevelScene() : 

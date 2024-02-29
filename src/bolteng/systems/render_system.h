@@ -3,12 +3,13 @@
 
 #include "component_system.h"
 
-class RenderSystem : public ComponentSystem {
+namespace bolt {
+    class RenderSystem : public ComponentSystem {
 
-public:
-    RenderSystem(entt::registry *m_pRegistry);
+    public:
+        RenderSystem(entt::registry *m_pRegistry);
 
-    void update(uint64_t deltaTime) override;
-};
-
+        void update(uint64_t deltaTime) override;
+    };
+}
 #endif // RENDER_SYSTEM_H

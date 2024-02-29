@@ -4,16 +4,17 @@
 #include <cstdint>
 #include <entt/entt.hpp>
 
-class ComponentSystem {
+namespace bolt {
+    class ComponentSystem {
 
-public:
-    ComponentSystem(entt::registry *pRegistry) : m_pRegistry(pRegistry) {}
-    virtual ~ComponentSystem() = default;
+    public:
+        ComponentSystem(entt::registry *pRegistry) : m_pRegistry(pRegistry) {}
+        virtual ~ComponentSystem() = default;
 
-    virtual void update(uint64_t deltaTime) = 0;
+        virtual void update(uint64_t deltaTime) = 0;
 
-protected:
-    entt::registry *m_pRegistry;
-};
-
+    protected:
+        entt::registry *m_pRegistry;
+    };
+}
 #endif // ENTITY_COMPONENT_SYSTEM_H

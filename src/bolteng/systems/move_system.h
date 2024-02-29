@@ -3,12 +3,13 @@
 
 #include "component_system.h"
 
-class MoveSystem : public ComponentSystem {
+namespace bolt {
+    class MoveSystem : public ComponentSystem {
 
-public:
-    MoveSystem(entt::registry *m_pRegistry);
+    public:
+        MoveSystem(entt::registry *m_pRegistry);
 
-    void update(uint64_t deltaTime) override;
-};
-
+        void update(uint64_t deltaTime) override;
+    };
+}
 #endif // MOVE_SYSTEM_H

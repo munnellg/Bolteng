@@ -49,14 +49,14 @@ private:
 
     size_t m_currentLevel; 
 
-    std::vector<ComponentSystem *> m_systems;
+    std::vector<bolt::ComponentSystem *> m_systems;
 
     Controller m_playerController;
 
-    RenderSystem m_renderSystem;
-    MoveSystem m_moveSystem;
-    CollisionSystem m_collisionSystem;
-    FramerateSystem m_framerateSystem;
+    bolt::RenderSystem m_renderSystem;
+    bolt::MoveSystem m_moveSystem;
+    bolt::CollisionSystem m_collisionSystem;
+    bolt::FramerateSystem m_framerateSystem;
 };
 
 #endif // SCENE_LEVEL

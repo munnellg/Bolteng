@@ -431,9 +431,7 @@ std::ostream& operator<<(std::ostream &os, Face const &f) {
 }
 
 namespace bolt {
-    namespace graphics {
-        [[nodiscard]] Status load_obj(std::filesystem::path const &path, Mesh &mesh) {
-            return ObjLoader().load_mesh(path);
-        }
+    [[nodiscard]] Status load_obj(std::filesystem::path const &path, Mesh &mesh) {
+        return ObjLoader().load_mesh(path);
     }
 }

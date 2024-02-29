@@ -51,7 +51,7 @@ namespace bolt {
         // always make sure we can quit the app
         bolt::input::platform.bind(bolt::input::PLATFORM_QUIT, std::bind(&BoltApp::quitMainLoop, this));
 
-        return postInit();
+        return true;
     }
 
     int BoltApp::quitMainLoop() {

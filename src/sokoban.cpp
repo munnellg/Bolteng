@@ -1,6 +1,7 @@
 #include "sokoban.h"
 #include "bolteng/defines.h"
 #include "scene/level_scene.h"
+#include "scene/render_3d_scene.h"
 #include "scene/splash_scene.h"
 #include "bolteng/subsystems/subsystems.h"
 #include "bolteng/logging.h"
@@ -13,7 +14,7 @@
 Sokoban::Sokoban() : 
     bolt::BoltApp("Sokoban")
 {
-    m_currentScene = std::make_shared<LevelScene>();
+    m_currentScene = std::make_shared<Render3DScene>();
 }
 
 bool Sokoban::postInit() {
