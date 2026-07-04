@@ -1,2 +1,4 @@
-- [ ] define fixed camera dimensions per resolution to avoid ugly scaling
-artifacts
+- [ ] |sokoban| define fixed camera dimensions per resolution to avoid ugly scaling artifacts
+- [ ] Pull texture/shader loaders out of the render subsystem. WTF was I doing there!?!
+- [ ] Write config loader that can be used as factory input to engine
+- [ ] Make it possible for engine users to add custom fields to settings file

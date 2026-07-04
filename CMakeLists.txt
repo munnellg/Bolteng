@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(sokoban)
+project(bolteng VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 
+include(FetchContent)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 
 find_package(SDL2 REQUIRED)
@@ -13,33 +14,19 @@ find_package(ASSIMP REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
-include_directories(${ASSIMP_INCLUDE_DIRS})
-include_directories(${PROJECT_SOURCE_DIR}/vendor/glm)
-include_directories(${PROJECT_SOURCE_DIR}/vendor/entt/single_include)
-
-file(GLOB_RECURSE HEADER_FILES "${PROJECT_SOURCE_DIR}/src/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 
-link_libraries(GLEW::GLEW OpenGL::GL SDL2::Main SDL2::Image)
-link_libraries(${ASSIMP_LIBRARIES})
+add_library(bolteng ${SOURCE_FILES} )
 
-add_executable(sokoban ${SOURCE_FILES} ${HEADER_FILES})
+target_include_directories(bolteng PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(bolteng PRIVATE ${ASSIMP_INCLUDE_DIRS})
+target_include_directories(bolteng PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glm)
+target_include_directories(bolteng PRIVATE ${PROJECT_SOURCE_DIR}/vendor/entt/single_include)
 
-if(MSVC)
-  target_compile_options(sokoban PRIVATE /W4 /WX)
-else()
-  target_compile_options(sokoban PRIVATE -Wall -Wextra -Wpedantic)
-endif()
+target_link_libraries(bolteng GLEW::GLEW OpenGL::GL SDL2::Main SDL2::Image)
+target_link_libraries(bolteng ${ASSIMP_LIBRARIES})
 
-# copy over the settings file for the game
-add_custom_command(
-    TARGET sokoban PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-                ${CMAKE_SOURCE_DIR}/settings.ini
-                ${CMAKE_CURRENT_BINARY_DIR}/settings.ini)
+target_compile_options(bolteng PRIVATE -Wall -Wextra -Wpedantic)
 
-add_custom_command(
-    TARGET sokoban PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/assets
-                ${CMAKE_CURRENT_BINARY_DIR}/assets)
+add_subdirectory(examples)
+add_subdirectory(tests)
